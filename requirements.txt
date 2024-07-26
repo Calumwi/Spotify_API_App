@@ -1,0 +1,5 @@
+fastapi==0.108.0
+fastjsonschema==2.19.1
+uvicorn==0.25.0
+starlette==0.32.0.post1
+requests==2.31.0

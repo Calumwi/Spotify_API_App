@@ -1,0 +1,2 @@
+- Try and migrate code to FastAPI
+- Simple React frontend
