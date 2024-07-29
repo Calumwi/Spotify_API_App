@@ -5,15 +5,16 @@ import base64
 from requests import post, get 
 from dotenv import load_dotenv
 import json
+import streamlit as st
 
 load_dotenv()  # Load environment variables from .env file
+
 
 app = FastAPI()
 client_id = os.getenv("CLIENT_ID")
 client_secret = os.getenv("CLIENT_SECRET")
 
 # print(client_id, client_secret)
-
 description = """
 This app will be able to:
 
@@ -55,6 +56,10 @@ def get_token():
     token = json_result["access_token"]
     return token
 
+if st.button('Press this to get an auth token'):
+    token = get_token()
+    st.write(f"Auth Token: {token}")
+
 def get_auth_header(token):
     return {"Authorization": "Bearer " + token}
     
@@ -67,16 +72,29 @@ def artist_search(artist_name):
     final_url = url + "?" + query
     result = get(final_url, headers=headers)
     json_result = json.loads(result.content)["artists"]["items"]
-    return json_result[0]
+    artist_id = json_result[0]["id"]
+    return json_result[0], artist_id
+
+artist_input = st.text_input("Please enter the name of the artist you'd like to search")
+if st.button('Search Artist'):
+    artist = artist_search(artist_input)
+    st.write(artist)
+
 
 @app.get("/get_songs_by_artist")
-def get_songs_by_artist(token, artist_id):
+def get_songs_by_artist(artist_id):
      token = get_token()
      url = f"https://api.spotify.com/v1/artists/{artist_id}/top-tracks?country=US"
      headers = get_auth_header(token)
      result = get(url, headers=headers)
      json_result = json.loads(result.content)["tracks"]
      return json_result
+
+artist_song_input = st.text_input("Please enter the name of the artist who's songs you want to see")
+if st.button('Search songs by artist'):
+    songs = get_songs_by_artist(artist_song_input)
+    st.write(songs)
+
 
 # def get_recommendations_by_danceability(token, target_danceability, seed_genres):
 #      url = f"https://api.spotify.com/v1/recommendations?seed_genres={seed_genres}&target_danceability={target_danceability}"

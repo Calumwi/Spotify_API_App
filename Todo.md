@@ -1,2 +1,3 @@
-- Try and migrate code to FastAPI
-- Simple React frontend
+Rudimentary Frontend via Streamlit
+    Implement ARtist ID into search by songs
+    Customize frontend with branding, style etc
